@@ -28,12 +28,12 @@ struct RightHand;
 #[derive(Component)]
 struct LeftHand;
 
+
 fn setup(
     mut commands: Commands,
 ){
     commands.spawn(Camera2dBundle::default());
 }
-//to mess with the sense can we just absolutely trash the camera?
 
 fn spawn_enemy(
     mut commands: Commands,
@@ -45,7 +45,7 @@ fn spawn_enemy(
 
     commands
         .spawn(SpriteBundle{
-            sprite: Sprite { color: Color::rgb(0.1, 0.4, 1.), custom_size: Some(Vec2::new(64., 128.)), ..default()},
+            sprite: Sprite { custom_size: Some(Vec2::new(64., 128.)), ..default()},
             transform: Transform::from_xyz(0., ENEMY_DISPLACEMENT_FROM_CENTER, 5.),
             texture: enemy_texture,
             ..default()
@@ -54,7 +54,7 @@ fn spawn_enemy(
 
     commands
         .spawn(SpriteBundle{
-            sprite: Sprite { color: Color::rgb(0.1, 0.4, 1.), custom_size: Some(Vec2::new(32., 32.)), ..default()},
+            sprite: Sprite { custom_size: Some(Vec2::new(32., 32.)), ..default()},
             transform: Transform::from_xyz(RIGHT_HAND_DISTANCE, ENEMY_DISPLACEMENT_FROM_CENTER + HAND_DISPLACEMENT, 10.),
             texture: right_hand_texture,
             ..default()
@@ -63,7 +63,7 @@ fn spawn_enemy(
 
     commands
         .spawn(SpriteBundle{
-            sprite: Sprite { color: Color::rgb(0.1, 0.4, 1.), custom_size: Some(Vec2::new(32., 32.)), ..default()},
+            sprite: Sprite { custom_size: Some(Vec2::new(32., 32.)), ..default()},
             transform: Transform::from_xyz(LEFT_HAND_DISTANCE, ENEMY_DISPLACEMENT_FROM_CENTER + HAND_DISPLACEMENT, 10.),
             texture: left_hand_texture,
             ..default()
@@ -85,22 +85,22 @@ fn spawn_background(
 
     commands
         .spawn(SpriteBundle{
-            sprite: Sprite { color: Color::rgb(0., 0., 0.), custom_size: Some(Vec2::new(300., 5000.)), ..default()},
-            transform: Transform::from_xyz(500., 0., -10.),
+            sprite: Sprite { color: Color::rgb(0., 0., 0.), custom_size: Some(Vec2::new(3000., 5000.)), ..default()},
+            transform: Transform::from_xyz(1850., 0., -10.),
             ..default()
         });
 
     commands
         .spawn(SpriteBundle{
-            sprite: Sprite { color: Color::rgb(0., 0., 0.), custom_size: Some(Vec2::new(300., 5000.)), ..default()},
-            transform: Transform::from_xyz(-500., 0., -10.),
+            sprite: Sprite { color: Color::rgb(0., 0., 0.), custom_size: Some(Vec2::new(3000., 5000.)), ..default()},
+            transform: Transform::from_xyz(-1850., 0., -10.),
             ..default()
         });
 }
 
 
 fn enemy_approach(
-    mut enemy: Query< &mut Transform ,With<Enemy>>,
+    mut enemy: Query<&mut Transform ,With<Enemy>>,
 ){
     for mut transform in enemy.iter_mut(){
         transform.scale.x += SCALE_RATE;
