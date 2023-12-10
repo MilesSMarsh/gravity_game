@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 const SCALE_RATE: f32 = 0.005;
+const KNOCKBACK: f32 = 1.;
 const RIGHT_HAND_DISTANCE: f32 = -32.;
 const LEFT_HAND_DISTANCE: f32 = 32.;
 const ENEMY_DISPLACEMENT_FROM_CENTER: f32 = -200.;
@@ -152,11 +153,16 @@ fn text_input(
     mut evr_char: EventReader<ReceivedCharacter>,
     kbd: Res<Input<KeyCode>>,
     mut string: Local<String>,
+    mut enemy: Query<&mut Transform, With<Enemy>>,
 ) {
     if kbd.just_pressed(KeyCode::Return) {
         println!("Text input: {}", &*string);
         if *string == WORD1 {
             println!("correct");
+            for mut transform in enemy.iter_mut() {
+                transform.scale.x -= KNOCKBACK;
+                transform.scale.y -= KNOCKBACK;
+            }
         }
         string.clear();
     }
