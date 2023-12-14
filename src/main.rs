@@ -20,7 +20,7 @@ fn main() {
             Update,
             (enemy_approach, enemy_approach_left, enemy_approach_right),
         )
-        .add_systems(Update, (text_input,spawn_text))
+        .add_systems(Update, text_input)
         .run()
 }
 
@@ -170,22 +170,4 @@ fn text_input(
             string.push(ev.char);
         }
     }
-}
-
-fn spawn_text(
-    mut commands: Commands,
-    mut asset_server: Res<AssetServer>,
-){
-    commands.spawn((
-        TextBundle::from_section(
-            "hello\nbevy!",
-            TextStyle {
-                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                font_size: 100.0,
-                ..default()
-            },
-        )
-        .with_text_alignment(TextAlignment::Center),
-    ))
-    .insert(TransformBundle::from(Transform::from_xyz(0.,0., 5.)));
 }
