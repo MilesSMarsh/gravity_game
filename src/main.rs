@@ -20,7 +20,7 @@ fn main() {
             Update,
             (enemy_approach, enemy_approach_left, enemy_approach_right),
         )
-        .add_systems(Update, text_input)
+        .add_systems(Update, (text_input,spawn_text))
         .run()
 }
 
@@ -133,15 +133,31 @@ fn text_input(
     mut evr_char: EventReader<ReceivedCharacter>,
     kbd: Res<Input<KeyCode>>,
     mut string: Local<String>,
-    mut enemy: Query<&mut Transform, With<Enemy>>,
+    mut enemy: Query<&mut Transform, (With<Enemy>, Without<RightHand>, Without<LeftHand>)>,
+    mut right_hand: Query<&mut Transform, (With<RightHand>, Without<LeftHand>, Without<Enemy>)>,
+    mut left_hand: Query<&mut Transform, (With<LeftHand>, Without<RightHand>)>,
 ) {
     if kbd.just_pressed(KeyCode::Return) {
         println!("Text input: {}", &*string);
         if *string == WORD1 {
             println!("correct");
             for mut transform in enemy.iter_mut() {
-                transform.scale.x -= KNOCKBACK;
-                transform.scale.y -= KNOCKBACK;
+                if transform.scale.x > KNOCKBACK{
+                    transform.scale.x -= KNOCKBACK;
+                    transform.scale.y -= KNOCKBACK;
+                }
+            }
+            for mut right_transform in right_hand.iter_mut() {
+                if right_transform.scale.x > KNOCKBACK{
+                    right_transform.scale.x -= KNOCKBACK * HAND_SCALE_RATIO;
+                    right_transform.scale.y -= KNOCKBACK * HAND_SCALE_RATIO;
+                }
+            }
+            for mut left_transform in left_hand.iter_mut() {
+                if left_transform.scale.x > KNOCKBACK {
+                    left_transform.scale.x -= KNOCKBACK * HAND_SCALE_RATIO;
+                    left_transform.scale.y -= KNOCKBACK * HAND_SCALE_RATIO;
+                }
             }
         }
         string.clear();
@@ -154,4 +170,22 @@ fn text_input(
             string.push(ev.char);
         }
     }
+}
+
+fn spawn_text(
+    mut commands: Commands,
+    mut asset_server: Res<AssetServer>,
+){
+    commands.spawn((
+        TextBundle::from_section(
+            "hello\nbevy!",
+            TextStyle {
+                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                font_size: 100.0,
+                ..default()
+            },
+        )
+        .with_text_alignment(TextAlignment::Center),
+    ))
+    .insert(TransformBundle::from(Transform::from_xyz(0.,0., 5.)));
 }
