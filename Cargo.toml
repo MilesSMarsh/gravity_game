@@ -9,3 +9,5 @@ edition = "2021"
 bevy = "*"
 
 bevy_rapier2d = "*"
+
+rand = "*"
